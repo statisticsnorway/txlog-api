@@ -1,10 +1,12 @@
 package no.ssb.txlog.memory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.huxhorn.sulky.ulid.ULID;
 import no.ssb.txlog.api.TransactionLog;
 import no.ssb.txlog.api.TransactionLogEntry;
 import no.ssb.txlog.api.TransactionLogReader;
 
+import java.time.ZonedDateTime;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -39,6 +41,59 @@ public class MemoryTransactionLog implements TransactionLog {
             throw new RuntimeException("Transaction-log is closed");
         }
         return new MemoryTransactionLogReader(ulid, new TreeMap<>(entryByUlid));
+    }
+
+    @Override
+    public TransactionLogEntry.Builder builder() {
+        return new TransactionLogEntry.Builder() {
+            ULID.Value transactionId;
+            String schema;
+            String domain;
+            String resourceId;
+            ZonedDateTime timestamp;
+            JsonNode data;
+
+            @Override
+            public TransactionLogEntry.Builder transactionId(ULID.Value transactionId) {
+                this.transactionId = transactionId;
+                return this;
+            }
+
+            @Override
+            public TransactionLogEntry.Builder schema(String schema) {
+                this.schema = schema;
+                return this;
+            }
+
+            @Override
+            public TransactionLogEntry.Builder domain(String domain) {
+                this.domain = domain;
+                return this;
+            }
+
+            @Override
+            public TransactionLogEntry.Builder resourceId(String resourceId) {
+                this.resourceId = resourceId;
+                return this;
+            }
+
+            @Override
+            public TransactionLogEntry.Builder timestamp(ZonedDateTime timestamp) {
+                this.timestamp = timestamp;
+                return this;
+            }
+
+            @Override
+            public TransactionLogEntry.Builder data(JsonNode data) {
+                this.data = data;
+                return this;
+            }
+
+            @Override
+            public TransactionLogEntry build() {
+                return new MemoryTransactionLogEntry(transactionId, schema, domain, resourceId, timestamp, data);
+            }
+        };
     }
 
     @Override

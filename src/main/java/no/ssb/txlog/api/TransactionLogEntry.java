@@ -18,4 +18,21 @@ public interface TransactionLogEntry {
     ZonedDateTime timestamp();
 
     JsonNode data();
+
+    interface Builder {
+
+        Builder transactionId(ULID.Value transactionId);
+
+        Builder schema(String schema);
+
+        Builder domain(String domain);
+
+        Builder resourceId(String resourceId);
+
+        Builder timestamp(ZonedDateTime timestamp);
+
+        Builder data(JsonNode data);
+
+        TransactionLogEntry build();
+    }
 }

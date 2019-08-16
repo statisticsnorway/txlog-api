@@ -6,6 +6,8 @@ public interface TransactionLog extends AutoCloseable {
 
     TransactionLogReader reader();
 
+    TransactionLogEntry.Builder builder();
+
     boolean isClosed();
 
 }
